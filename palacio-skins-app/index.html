@@ -40,3 +40,110 @@
     }
     .panel.active {
       display: block;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+    th, td {
+      padding: 8px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    tr.highlight {
+      background-color: #fef9c3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🏌️‍♂️ Palacio Del Mar Summer Skins League</h1>
+  <p style="text-align:center; font-style: italic;">Low scores. High drama. Medium beers. 🍻</p>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('welcome')">Welcome</div>
+    <div class="tab" onclick="showTab('entry')">Score Entry</div>
+    <div class="tab" onclick="showTab('leaderboard')">Leaderboard</div>
+    <div class="tab" onclick="showTab('info')">Info</div>
+  </div>
+
+  <div id="welcome" class="panel active">
+    <h2>Welcome to the 2025 Season!</h2>
+    <p style="text-align: center;">Meet at the putting green every Thursday at 5:45pm.</p>
+  </div>
+
+  <div id="entry" class="panel">
+    <h2>Enter Your Score</h2>
+    <label>Name:
+      <select id="player">
+        <option value="">Select</option>
+        <option>Craig Sanger</option>
+        <option>Jay Nakamura</option>
+        <option>Other</option>
+      </select>
+    </label><br><br>
+    <label>Date: <input type="date" id="date" /></label><br><br>
+    <label><input type="checkbox" id="birdie" /> Birdie</label><br>
+    <label><input type="checkbox" id="chip" /> Chip-In</label><br>
+    <label><input type="checkbox" id="eagle" /> Eagle</label><br>
+    <label><input type="checkbox" id="ctp" /> CTP (Hole 9 only)</label><br><br>
+    <button onclick="submitScore()">Submit Score</button>
+    <p id="confirm" style="color: green; font-weight: bold;"></p>
+  </div>
+
+  <div id="leaderboard" class="panel">
+    <h2>Leaderboard</h2>
+    <table>
+      <thead>
+        <tr><th>Rank</th><th>Player</th><th>Skins</th><th>CTP</th><th>Total $</th></tr>
+      </thead>
+      <tbody>
+        <tr class="highlight"><td>1</td><td>Eric Ingersoll</td><td>7</td><td>1</td><td>$680</td></tr>
+        <tr class="highlight"><td>2</td><td>Jay Nakamura</td><td>2</td><td>0</td><td>$375</td></tr>
+        <tr class="highlight"><td>3</td><td>Jory Adam</td><td>3</td><td>0</td><td>$300</td></tr>
+        <tr class="highlight"><td>4</td><td>Gavin Lodge</td><td>3</td><td>0</td><td>$225</td></tr>
+        <tr class="highlight"><td>5</td><td>Jared Sanderson</td><td>2</td><td>1</td><td>$205</td></tr>
+        <tr class="highlight"><td>6</td><td>Eli Sandford</td><td>1</td><td>1</td><td>$105</td></tr>
+        <tr><td>7</td><td>Craig Sanger</td><td>1</td><td>0</td><td>$100</td></tr>
+        <tr><td>8</td><td>Jermell Mitchell</td><td>1</td><td>0</td><td>$100</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="info" class="panel">
+    <h2>League Info</h2>
+    <p><strong>Residents:</strong> $200 • <strong>Guests:</strong> $350</p>
+    <p><strong>Venmo:</strong> @Craig-Sanger-2</p>
+    <p><strong>CTP Rules:</strong> Hole 9 only, must hit green + par or better.</p>
+    <p><strong>Playoff:</strong> Top 6 auto-qualify for Week 15 Horse Race. 4 Wildcards join pre-race.</p>
+  </div>
+
+  <script>
+    function showTab(id) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    function submitScore() {
+      const name = document.getElementById('player').value;
+      const date = document.getElementById('date').value;
+      if (!name || !date) {
+        alert('Please enter your name and date');
+        return;
+      }
+      const messages = [
+        'You sandbagger! Score submitted.',
+        'Nice chip-in! We’ll fact check it.',
+        'The golf gods have received your card.',
+        'Your birdie may or may not be real. Logged anyway.',
+        'Craig has been notified. (He’s suspicious.)'
+      ];
+      const random = messages[Math.floor(Math.random() * messages.length)];
+      document.getElementById('confirm').textContent = random;
+    }
+  </script>
+</body>
+</html>
