@@ -13,7 +13,7 @@
       max-width: 600px;
       margin: auto;
     }
-    h1 {
+    h1, h2 {
       text-align: center;
     }
     .hole-card {
@@ -23,9 +23,6 @@
       border-radius: 10px;
       margin-bottom: 12px;
       transition: all 0.3s ease;
-    }
-    .hole-card h2 {
-      margin-top: 0;
     }
     .checkboxes label {
       display: block;
@@ -40,77 +37,216 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    .log {
-      margin-top: 24px;
-      border-top: 1px dashed #ccc;
-      padding-top: 16px;
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 12px;
     }
-    .entry {
-      margin-bottom: 12px;
-      padding: 12px;
+    .summary-table {
+      margin-top: 24px;
+      border-collapse: collapse;
+      width: 100%;
       background: #f0fdf4;
-      border-left: 4px solid #10b981;
+    }
+    .summary-table th, .summary-table td {
+      padding: 8px;
+      border: 1px solid #a7f3d0;
+      text-align: center;
+    }
+    .note {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 0.9em;
+      color: #047857;
     }
   </style>
 </head>
 <body>
   <h1>Palacio Hole-by-Hole Score Entry</h1>
+  <div class="hole-card">
+    <label><strong>Player Name:</strong><br>
+      <input type="text" id="playerName" placeholder="Enter your name" style="width:100%;padding:8px;margin-top:6px;">
+    </label>
+    <label><strong>Date:</strong><br>
+      <input type="date" id="playDate" style="width:100%;padding:8px;margin-top:6px;" value="">
+    </label>
+  </div>
   <div id="entryForm"></div>
-  <div class="log" id="log"></div>
+  <div style="text-align:center; margin-top: 20px;">
+    <button onclick="resetRound()">🔄 Start Over</button>
+  </div>
+  <div id="summary"></div>
 
   <script>
     const holes = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     let currentHoleIndex = 0;
+    const scores = {};
 
     const formContainer = document.getElementById("entryForm");
-    const logContainer = document.getElementById("log");
+    const summaryContainer = document.getElementById("summary");
 
     function renderHoleForm() {
+      if (currentHoleIndex >= holes.length) {
+        formContainer.innerHTML = `<h2>All holes completed! 🏁</h2>`;
+        return;
+      }
+
       const hole = holes[currentHoleIndex];
       formContainer.innerHTML = `
         <div class="hole-card">
           <h2>Hole ${hole}</h2>
           <div class="checkboxes">
+            <label><input type="checkbox" id="eagle" /> Hole-in-One</label>
             <label><input type="checkbox" id="birdie" /> Birdie</label>
-            <label><input type="checkbox" id="chip" /> Chip-In</label>
-            <label><input type="checkbox" id="eagle" /> Eagle</label>
+            <label style="margin-left: 20px;"><input type="checkbox" id="chip" /> It was a Chip-In</label>
+            <label><input type="checkbox" id="par" /> Par or Worse</label>
             ${hole === 9 ? '<label><input type="checkbox" id="ctp" /> CTP</label>' : ''}
           </div>
-          <button onclick="submitHole(${hole})">Submit Hole ${hole}</button>
+          <div class="nav-buttons">
+            <button onclick="goBack()" ${currentHoleIndex === 0 ? 'disabled' : ''}>◀ Back</button>
+            <button onclick="submitHole(${hole})">Submit Hole ${hole}</button>
+          </div>
         </div>
       `;
+
+      setTimeout(() => {
+        const chip = document.getElementById("chip");
+        const birdie = document.getElementById("birdie");
+        const eagle = document.getElementById("eagle");
+        const par = document.getElementById("par");
+
+        if (chip && birdie) {
+          chip.disabled = !birdie.checked;
+          birdie.addEventListener("change", () => {
+            chip.disabled = !birdie.checked;
+            if (!birdie.checked) chip.checked = false;
+          });
+        }
+
+        function uncheckOthers(checkbox) {
+          if (checkbox === eagle && eagle.checked) {
+            birdie.checked = chip.checked = par.checked = false;
+          } else if ((checkbox === birdie || checkbox === chip) && (birdie.checked || chip.checked)) {
+            eagle.checked = par.checked = false;
+          } else if (checkbox === par && par.checked) {
+            birdie.checked = chip.checked = eagle.checked = false;
+          }
+        }
+
+        [eagle, birdie, chip, par].forEach(cb => {
+          if (cb) {
+            cb.addEventListener("change", () => uncheckOthers(cb));
+          }
+        });
+      }, 0);
     }
 
-    function submitHole(hole) {
+function submitHole(hole) {
       const birdie = document.getElementById("birdie").checked;
       const chip = document.getElementById("chip").checked;
       const eagle = document.getElementById("eagle").checked;
-      const ctp = hole === 9 ? document.getElementById("ctp").checked : false;
+      const par = document.getElementById("par").checked;
+      const ctp = hole === 9 && document.getElementById("ctp").checked;
 
-      const entryHTML = `
-        <div class="entry">
-          <strong>Hole ${hole}:</strong>
-          <ul>
-            ${birdie ? '<li>✅ Birdie</li>' : ''}
-            ${chip ? '<li>✅ Chip-In</li>' : ''}
-            ${eagle ? '<li>✅ Eagle</li>' : ''}
-            ${ctp ? '<li>📍 CTP</li>' : ''}
-            ${!birdie && !chip && !eagle && !ctp ? '<li>– No entry –</li>' : ''}
-          </ul>
-        </div>
-      `;
+      const playerName = document.getElementById("playerName").value.trim();
+      const playDate = document.getElementById("playDate").value;
 
-      logContainer.insertAdjacentHTML("beforeend", entryHTML);
-      currentHoleIndex++;
+      if (!playerName || !playDate) {
+        alert("Please enter both your name and the date.");
+        return;
+      }
 
-      if (currentHoleIndex < holes.length) {
+      if (!(birdie || chip || eagle || par || ctp)) {
+        alert("Please select a score or status for this hole.");
+        return;
+      }
+
+      if (eagle) alert("🏆 Hole-in-One! That's legendary!");
+      if (birdie && chip) alert("👏 Chip-in birdie! That’s finesse!");
+
+      const scoreValue = eagle ? "1" : (birdie && chip ? "2*" : (birdie ? "2" : (par ? "3+" : "")));
+      const ctpMark = ctp ? " 📍" : "";
+
+      scores[hole] = scoreValue + ctpMark;
+
+      if (currentHoleIndex < holes.length - 1) {
+        currentHoleIndex++;
+      }
+      
+
+
+const dateInput = document.getElementById("playDate");
+if (dateInput && !dateInput.value) {
+  dateInput.value = new Date().toISOString().split("T")[0];
+}
+renderHoleForm();
+      
+
+      renderSummary();
+    }
+
+    function goBack() {
+      if (currentHoleIndex > 0) {
+        currentHoleIndex--;
         renderHoleForm();
-      } else {
-        formContainer.innerHTML = `<h2>All holes completed! 🏁</h2>`;
       }
     }
 
+    function getMark(hole) {
+      return scores[hole] || "";
+    }
+
+    function renderSummary() {
+      const playerName = document.getElementById("playerName")?.value.trim();
+      const playDate = document.getElementById("playDate")?.value;
+      const currentHole = holes[currentHoleIndex - 1] || 1;
+      const scoreValue = scores[currentHole] || "";
+      const ctp = scoreValue.includes("📍");
+
+      fetch("https://script.google.com/macros/s/AKfycbw0a-iAi31Vf1VzoHKTH7UMORL4Yj5nkMpqEuwp_V1HZ3QVV6qaTTBTX9frGMBZ30G4wA/exec", {
+        method: "POST",
+        body: JSON.stringify({
+          player: playerName,
+          date: playDate,
+          hole: currentHole,
+          score: scoreValue.replace(" 📍", ""),
+          ctp: ctp
+        }),
+        headers: { "Content-Type": "application/json" }
+      });
+      let headerRow = "<tr><th>Hole</th>" + holes.map(h => `<th>${h}</th>`).join("") + "</tr>";
+      let scoreRow = "<tr><td>Score</td>" + holes.map(h => `<td>${scores[h] || "–"}</td>`).join("") + "</tr>";
+      
+      const title = playerName && playDate ? `<h3 style='text-align:center;'>${playerName} – ${playDate}</h3>` : "";
+      summaryContainer.innerHTML = title + `
+        <table class="summary-table">
+          ${headerRow}
+          ${scoreRow}
+        </table>
+        <p class="note">1 = Hole-in-One • 2 = Birdie/Chip-In • 3+ = Par or Worse</p>
+        <div class="note" style="margin-top: 16px;">
+          ${holes.map(h => {
+            const mark = scores[h] || "–";
+            const birdie = mark.startsWith("2") ? "Yes" : "No";
+            const eagle = mark === "1" ? "Yes" : "No";
+            const chip = mark === "2*" ? "Yes" : "No";
+            return `<div><strong>Hole ${h}:</strong> Birdie: ${birdie}, Chip-In: ${chip}, Hole-in-One: ${eagle}</div>`;
+          }).join("")}
+        </div>`;
+    }
+
     renderHoleForm();
-  </script>
+  
+
+    function resetRound() {
+      currentHoleIndex = 0;
+      Object.keys(scores).forEach(h => delete scores[h]);
+      document.getElementById("playerName").value = "";
+      document.getElementById("playDate").value = new Date().toISOString().split("T")[0];
+      renderHoleForm();
+      summaryContainer.innerHTML = "";
+    }
+
+</script>
 </body>
 </html>
