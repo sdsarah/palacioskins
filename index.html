@@ -3,176 +3,114 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Palacio Skins League</title>
+  <title>Palacio Skins Hole-by-Hole</title>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #ecfdf5, #d1fae5);
+      background: linear-gradient(to bottom, #f0fdf4, #d1fae5);
       color: #065f46;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    .hole-card {
+      border: 2px solid #10b981;
+      background: #ecfdf5;
       padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      transition: all 0.3s ease;
     }
-    h1, h2 {
-      text-align: center;
+    .hole-card h2 {
+      margin-top: 0;
     }
-    .tabs {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-    .tab {
-      padding: 10px 14px;
-      border: 1px solid #10b981;
-      border-radius: 6px;
-      background: white;
-      cursor: pointer;
-      font-weight: bold;
-      color: #065f46;
-    }
-    .tab.active {
-      background: #10b981;
-      color: white;
-    }
-    .panel {
-      display: none;
-    }
-    .panel.active {
+    .checkboxes label {
       display: block;
-      animation: fadeIn 0.3s;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; } to { opacity: 1; }
-    }
-    table {
-      width: 100%;
-      margin-top: 1rem;
-      border-collapse: collapse;
-    }
-    th, td {
-      padding: 8px;
-      border: 1px solid #ccc;
-      text-align: center;
-    }
-    tr.highlight {
-      background-color: #fef9c3;
-    }
-    select, input[type="date"] {
-      padding: 6px;
-      margin: 4px 0 12px;
-      width: 100%;
-      max-width: 320px;
+      margin: 6px 0;
     }
     button {
-      padding: 10px 16px;
+      margin-top: 12px;
+      padding: 8px 14px;
       background: #10b981;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 5px;
       cursor: pointer;
-      font-weight: bold;
     }
-    button:hover {
-      background: #059669;
+    .log {
+      margin-top: 24px;
+      border-top: 1px dashed #ccc;
+      padding-top: 16px;
+    }
+    .entry {
+      margin-bottom: 12px;
+      padding: 12px;
+      background: #f0fdf4;
+      border-left: 4px solid #10b981;
     }
   </style>
 </head>
 <body>
-  <h1>⛳ Palacio Del Mar Skins League</h1>
-  <p style="text-align:center; font-style:italic;">Low scores. High drama. Medium beers. 🍻</p>
-
-  <div class="tabs">
-    <div class="tab active" onclick="showTab('welcome', this)">Welcome</div>
-    <div class="tab" onclick="showTab('entry', this)">Score Entry</div>
-    <div class="tab" onclick="showTab('leaderboard', this)">Leaderboard</div>
-    <div class="tab" onclick="showTab('info', this)">Info</div>
-  </div>
-
-  <div id="welcome" class="panel active">
-    <h2>Welcome to the 2025 Season!</h2>
-    <p style="text-align:center;">Meet at the putting green Thursdays @ 5:45pm sharp!</p>
-  </div>
-
-  <div id="entry" class="panel">
-    <h2>Score Entry</h2>
-    <label for="player">Name:</label><br />
-    <select id="player">
-      <option value="">-- Select Player --</option>
-      <option>Commish</option>
-      <option>Craig Sanger</option>
-      <option>Eric Ingersoll</option>
-      <option>Jay Nakamura</option>
-      <option>Jory Adam</option>
-      <option>Gavin Lodge</option>
-      <option>Jared Sanderson</option>
-      <option>Eli Sandford</option>
-      <option>Jermell Mitchell</option>
-      <option>Other</option>
-    </select><br />
-
-    <label>Date:</label><br />
-    <input type="date" id="date" /><br />
-
-    <label><input type="checkbox" id="birdie" /> Birdie</label><br />
-    <label><input type="checkbox" id="chip" /> Chip-In</label><br />
-    <label><input type="checkbox" id="eagle" /> Eagle</label><br />
-    <label><input type="checkbox" id="ctp" /> CTP (Hole 9 only)</label><br /><br />
-
-    <button onclick="submitScore()">Submit Score</button>
-    <p id="confirm" style="font-weight:bold; color:green;"></p>
-  </div>
-
-  <div id="leaderboard" class="panel">
-    <h2>Leaderboard</h2>
-    <table>
-      <thead>
-        <tr><th>Rank</th><th>Player</th><th>Skins</th><th>CTP</th><th>$ Total</th></tr>
-      </thead>
-      <tbody>
-        <tr class="highlight"><td>1</td><td>Eric Ingersoll</td><td>7</td><td>1</td><td>$680</td></tr>
-        <tr class="highlight"><td>2</td><td>Jay Nakamura</td><td>2</td><td>0</td><td>$375</td></tr>
-        <tr class="highlight"><td>3</td><td>Jory Adam</td><td>3</td><td>0</td><td>$300</td></tr>
-        <tr class="highlight"><td>4</td><td>Gavin Lodge</td><td>3</td><td>0</td><td>$225</td></tr>
-        <tr class="highlight"><td>5</td><td>Jared Sanderson</td><td>2</td><td>1</td><td>$205</td></tr>
-        <tr class="highlight"><td>6</td><td>Eli Sandford</td><td>1</td><td>1</td><td>$105</td></tr>
-        <tr><td>7</td><td>Craig Sanger</td><td>1</td><td>0</td><td>$100</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div id="info" class="panel">
-    <h2>League Info</h2>
-    <p><strong>Resident Fee:</strong> $200 • <strong>Guest Fee:</strong> $350</p>
-    <p><strong>Venmo:</strong> @Craig-Sanger-2</p>
-    <p><strong>CTP:</strong> Hole 9 only, green hit + par or better</p>
-    <p><strong>Horse Race:</strong> Top 6 auto-qualify + 4 wildcards for playoff finale</p>
-  </div>
+  <h1>Palacio Hole-by-Hole Score Entry</h1>
+  <div id="entryForm"></div>
+  <div class="log" id="log"></div>
 
   <script>
-    function showTab(id, el) {
-      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      el.classList.add('active');
+    const holes = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    let currentHoleIndex = 0;
+
+    const formContainer = document.getElementById("entryForm");
+    const logContainer = document.getElementById("log");
+
+    function renderHoleForm() {
+      const hole = holes[currentHoleIndex];
+      formContainer.innerHTML = `
+        <div class="hole-card">
+          <h2>Hole ${hole}</h2>
+          <div class="checkboxes">
+            <label><input type="checkbox" id="birdie" /> Birdie</label>
+            <label><input type="checkbox" id="chip" /> Chip-In</label>
+            <label><input type="checkbox" id="eagle" /> Eagle</label>
+            ${hole === 9 ? '<label><input type="checkbox" id="ctp" /> CTP</label>' : ''}
+          </div>
+          <button onclick="submitHole(${hole})">Submit Hole ${hole}</button>
+        </div>
+      `;
     }
 
-    function submitScore() {
-      const name = document.getElementById('player').value;
-      const date = document.getElementById('date').value;
-      if (!name || !date) {
-        alert("Please fill in name and date");
-        return;
+    function submitHole(hole) {
+      const birdie = document.getElementById("birdie").checked;
+      const chip = document.getElementById("chip").checked;
+      const eagle = document.getElementById("eagle").checked;
+      const ctp = hole === 9 ? document.getElementById("ctp").checked : false;
+
+      const entryHTML = `
+        <div class="entry">
+          <strong>Hole ${hole}:</strong>
+          <ul>
+            ${birdie ? '<li>✅ Birdie</li>' : ''}
+            ${chip ? '<li>✅ Chip-In</li>' : ''}
+            ${eagle ? '<li>✅ Eagle</li>' : ''}
+            ${ctp ? '<li>📍 CTP</li>' : ''}
+            ${!birdie && !chip && !eagle && !ctp ? '<li>– No entry –</li>' : ''}
+          </ul>
+        </div>
+      `;
+
+      logContainer.insertAdjacentHTML("beforeend", entryHTML);
+      currentHoleIndex++;
+
+      if (currentHoleIndex < holes.length) {
+        renderHoleForm();
+      } else {
+        formContainer.innerHTML = `<h2>All holes completed! 🏁</h2>`;
       }
-      const messages = [
-        "Score submitted! Hope it's legit. 🧐",
-        "We logged it — even if Craig’s raising an eyebrow.",
-        "You're now on the record. Forever.",
-        "Nice birdie. Or was it? 🐦",
-        "Swing hard, submit harder."
-      ];
-      document.getElementById("confirm").textContent = messages[Math.floor(Math.random() * messages.length)];
     }
+
+    renderHoleForm();
   </script>
 </body>
 </html>
