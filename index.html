@@ -203,43 +203,46 @@ renderHoleForm();
     }
 
     function renderSummary() {
-      const playerName = document.getElementById("playerName")?.value.trim();
-      const playDate = document.getElementById("playDate")?.value;
-      const currentHole = holes[currentHoleIndex - 1] || 1;
-      const scoreValue = scores[currentHole] || "";
-      const ctp = scoreValue.includes("📍");
+  const playerName = document.getElementById("playerName")?.value.trim();
+  const playDate = document.getElementById("playDate")?.value;
+  const currentHole = holes[currentHoleIndex - 1] || 1;
+  const scoreValue = scores[currentHole] || "";
+  const ctp = scoreValue.includes("📍");
 
-      fetch("https://script.google.com/macros/s/AKfycby_RApQAD_USwwlBTSJh5AQ9-JoplKZsw3iil4nBGWFMeQkIcaaEIe7LuI2N8wZfyYC/exec", {
-        method: "POST",
-        body: JSON.stringify({
-          player: playerName,
-          date: playDate,
-          hole: currentHole,
-          score: scoreValue.replace(" 📍", ""),
-          ctp: ctp
-        }),
-        headers: { "Content-Type": "application/json" }
-      });
-      let headerRow = "<tr><th>Hole</th>" + holes.map(h => `<th>${h}</th>`).join("") + "</tr>";
-      let scoreRow = "<tr><td>Score</td>" + holes.map(h => `<td>${scores[h] || "–"}</td>`).join("") + "</tr>";
-      
-      const title = playerName && playDate ? `<h3 style='text-align:center;'>${playerName} – ${playDate}</h3>` : "";
-      summaryContainer.innerHTML = title + `
-        <table class="summary-table">
-          ${headerRow}
-          ${scoreRow}
-        </table>
-        <p class="note">1 = Hole-in-One • 2 = Birdie/Chip-In • 3+ = Par or Worse</p>
-        <div class="note" style="margin-top: 16px;">
-          ${holes.map(h => {
-            const mark = scores[h] || "–";
-            const birdie = mark.startsWith("2") ? "Yes" : "No";
-            const eagle = mark === "1" ? "Yes" : "No";
-            const chip = mark === "2*" ? "Yes" : "No";
-            return `<div><strong>Hole ${h}:</strong> Birdie: ${birdie}, Chip-In: ${chip}, Hole-in-One: ${eagle}</div>`;
-          }).join("")}
-        </div>`;
-    }
+  fetch("https://script.google.com/macros/s/AKfycby_RApQAD_USwwlBTSJh5AQ9-JoplKZsw3iil4nBGWFMeQkIcaaEIe7LuI2N8wZfyYC/exec", {
+    method: "POST",
+    body: JSON.stringify({
+      player: playerName,
+      date: playDate,
+      hole: currentHole,
+      score: scoreValue.replace(" 📍", ""),
+      ctp: ctp
+    }),
+    headers: { "Content-Type": "application/json" }
+  });
+
+  let headerRow = "<tr><th>Hole</th>" + holes.map(h => `<th>${h}</th>`).join("") + "</tr>";
+  let scoreRow = "<tr><td>Score</td>" + holes.map(h => `<td>${scores[h] || "–"}</td>`).join("") + "</tr>";
+
+  const title = playerName && playDate ? `<h3 style='text-align:center;'>${playerName} – ${playDate}</h3>` : "";
+  const holeSummaries = holes.map(h => {
+    const mark = scores[h] || "–";
+    let birdie = mark.startsWith("2") ? 1 : 0;
+    let chip = mark === "2*" ? 1 : 0;
+    let eagle = mark === "1" ? 1 : 0;
+    return `<div><strong>Hole ${h} Summary:</strong> Birdies: ${birdie}, Chip-ins: ${chip}, Hole-in-Ones: ${eagle}</div>`;
+  }).join("");
+
+  summaryContainer.innerHTML = `${title}
+    <table class="summary-table">
+      ${headerRow}
+      ${scoreRow}
+    </table>
+    <p class="note">1 = Hole-in-One • 2 = Birdie/Chip-In • 3+ = Par or Worse</p>
+    <div class="note" style="margin-top: 16px;">
+      ${holeSummaries}
+    </div>`;
+}
 
     renderHoleForm();
   
