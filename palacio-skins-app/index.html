@@ -1,148 +1,252 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Palacio Summer Skins League</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Palacio Skins Hole-by-Hole</title>
   <style>
     body {
-      margin: 0;
-      font-family: sans-serif;
-      background: linear-gradient(to bottom, #ecfdf5, #d1fae5);
-      color: #064e3b;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #f0fdf4, #d1fae5);
+      color: #065f46;
       padding: 20px;
+      max-width: 600px;
+      margin: auto;
     }
     h1, h2 {
       text-align: center;
     }
-    .tabs {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 20px;
+    .hole-card {
+      border: 2px solid #10b981;
+      background: #ecfdf5;
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      transition: all 0.3s ease;
     }
-    .tab {
-      padding: 10px 16px;
-      border: 1px solid #059669;
-      background-color: white;
-      color: #065f46;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .tab.active {
-      background-color: #059669;
-      color: white;
-    }
-    .panel {
-      display: none;
-    }
-    .panel.active {
+    .checkboxes label {
       display: block;
+      margin: 6px 0;
     }
-    table {
-      width: 100%;
+    button {
+      margin-top: 12px;
+      padding: 8px 14px;
+      background: #10b981;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 12px;
+    }
+    .summary-table {
+      margin-top: 24px;
       border-collapse: collapse;
-      margin-top: 16px;
+      width: 100%;
+      background: #f0fdf4;
     }
-    th, td {
+    .summary-table th, .summary-table td {
       padding: 8px;
-      border: 1px solid #ddd;
+      border: 1px solid #a7f3d0;
       text-align: center;
     }
-    tr.highlight {
-      background-color: #fef9c3;
+    .note {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 0.9em;
+      color: #047857;
     }
   </style>
 </head>
 <body>
-  <h1>🏌️‍♂️ Palacio Del Mar Summer Skins League</h1>
-  <p style="text-align:center; font-style: italic;">Low scores. High drama. Medium beers. 🍻</p>
-
-  <div class="tabs">
-    <div class="tab active" onclick="showTab('welcome', this)">Welcome</div>
-    <div class="tab" onclick="showTab('entry', this)">Score Entry</div>
-    <div class="tab" onclick="showTab('leaderboard', this)">Leaderboard</div>
-    <div class="tab" onclick="showTab('info', this)">Info</div>
+  <h1>Palacio Hole-by-Hole Score Entry</h1>
+  <div class="hole-card">
+    <label><strong>Player Name:</strong><br>
+      <input type="text" id="playerName" placeholder="Enter your name" style="width:100%;padding:8px;margin-top:6px;">
+    </label>
+    <label><strong>Date:</strong><br>
+      <input type="date" id="playDate" style="width:100%;padding:8px;margin-top:6px;" value="">
+    </label>
   </div>
-
-  <div id="welcome" class="panel active">
-    <h2>Welcome to the 2025 Season!</h2>
-    <p style="text-align: center;">Meet at the putting green every Thursday at 5:45pm.</p>
+  <div id="entryForm"></div>
+  <div style="text-align:center; margin-top: 20px;">
+    <button onclick="resetRound()">🔄 Start Over</button>
   </div>
-
-  <div id="entry" class="panel">
-    <h2>Enter Your Score</h2>
-    <label>Name:
-      <select id="player">
-        <option value="">Select</option>
-        <option>Craig Sanger</option>
-        <option>Jay Nakamura</option>
-        <option>Other</option>
-      </select>
-    </label><br><br>
-    <label>Date: <input type="date" id="date" /></label><br><br>
-    <label><input type="checkbox" id="birdie" /> Birdie</label><br>
-    <label><input type="checkbox" id="chip" /> Chip-In</label><br>
-    <label><input type="checkbox" id="eagle" /> Eagle</label><br>
-    <label><input type="checkbox" id="ctp" /> CTP (Hole 9 only)</label><br><br>
-    <button onclick="submitScore()">Submit Score</button>
-    <p id="confirm" style="color: green; font-weight: bold;"></p>
-  </div>
-
-  <div id="leaderboard" class="panel">
-    <h2>Leaderboard</h2>
-    <table>
-      <thead>
-        <tr><th>Rank</th><th>Player</th><th>Skins</th><th>CTP</th><th>Total $</th></tr>
-      </thead>
-      <tbody>
-        <tr class="highlight"><td>1</td><td>Eric Ingersoll</td><td>7</td><td>1</td><td>$680</td></tr>
-        <tr class="highlight"><td>2</td><td>Jay Nakamura</td><td>2</td><td>0</td><td>$375</td></tr>
-        <tr class="highlight"><td>3</td><td>Jory Adam</td><td>3</td><td>0</td><td>$300</td></tr>
-        <tr class="highlight"><td>4</td><td>Gavin Lodge</td><td>3</td><td>0</td><td>$225</td></tr>
-        <tr class="highlight"><td>5</td><td>Jared Sanderson</td><td>2</td><td>1</td><td>$205</td></tr>
-        <tr class="highlight"><td>6</td><td>Eli Sandford</td><td>1</td><td>1</td><td>$105</td></tr>
-        <tr><td>7</td><td>Craig Sanger</td><td>1</td><td>0</td><td>$100</td></tr>
-        <tr><td>8</td><td>Jermell Mitchell</td><td>1</td><td>0</td><td>$100</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div id="info" class="panel">
-    <h2>League Info</h2>
-    <p><strong>Residents:</strong> $200 • <strong>Guests:</strong> $350</p>
-    <p><strong>Venmo:</strong> @Craig-Sanger-2</p>
-    <p><strong>CTP Rules:</strong> Hole 9 only, must hit green + par or better.</p>
-    <p><strong>Playoff:</strong> Top 6 auto-qualify for Week 15 Horse Race. 4 Wildcards join pre-race.</p>
-  </div>
+  <div id="summary"></div>
 
   <script>
-    function showTab(id, el) {
-      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      el.classList.add('active');
-    }
+    const holes = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    let currentHoleIndex = 0;
+    const scores = {};
 
-    function submitScore() {
-      const name = document.getElementById('player').value;
-      const date = document.getElementById('date').value;
-      if (!name || !date) {
-        alert('Please enter your name and date');
+    const formContainer = document.getElementById("entryForm");
+    const summaryContainer = document.getElementById("summary");
+
+    function renderHoleForm() {
+      if (currentHoleIndex >= holes.length) {
+        formContainer.innerHTML = `<h2>All holes completed! 🏁</h2>`;
         return;
       }
-      const messages = [
-        'You sandbagger! Score submitted.',
-        'Nice chip-in! We’ll fact check it.',
-        'The golf gods have received your card.',
-        'Your birdie may or may not be real. Logged anyway.',
-        'Craig has been notified. (He’s suspicious.)'
-      ];
-      const random = messages[Math.floor(Math.random() * messages.length)];
-      document.getElementById('confirm').textContent = random;
+
+      const hole = holes[currentHoleIndex];
+      formContainer.innerHTML = `
+        <div class="hole-card">
+          <h2>Hole ${hole}</h2>
+          <div class="checkboxes">
+            <label><input type="checkbox" id="eagle" /> Hole-in-One</label>
+            <label><input type="checkbox" id="birdie" /> Birdie</label>
+            <label style="margin-left: 20px;"><input type="checkbox" id="chip" /> It was a Chip-In</label>
+            <label><input type="checkbox" id="par" /> Par or Worse</label>
+            ${hole === 9 ? '<label><input type="checkbox" id="ctp" /> CTP</label>' : ''}
+          </div>
+          <div class="nav-buttons">
+            <button onclick="goBack()" ${currentHoleIndex === 0 ? 'disabled' : ''}>◀ Back</button>
+            <button onclick="submitHole(${hole})">Submit Hole ${hole}</button>
+          </div>
+        </div>
+      `;
+
+      setTimeout(() => {
+        const chip = document.getElementById("chip");
+        const birdie = document.getElementById("birdie");
+        const eagle = document.getElementById("eagle");
+        const par = document.getElementById("par");
+
+        if (chip && birdie) {
+          chip.disabled = !birdie.checked;
+          birdie.addEventListener("change", () => {
+            chip.disabled = !birdie.checked;
+            if (!birdie.checked) chip.checked = false;
+          });
+        }
+
+        function uncheckOthers(checkbox) {
+          if (checkbox === eagle && eagle.checked) {
+            birdie.checked = chip.checked = par.checked = false;
+          } else if ((checkbox === birdie || checkbox === chip) && (birdie.checked || chip.checked)) {
+            eagle.checked = par.checked = false;
+          } else if (checkbox === par && par.checked) {
+            birdie.checked = chip.checked = eagle.checked = false;
+          }
+        }
+
+        [eagle, birdie, chip, par].forEach(cb => {
+          if (cb) {
+            cb.addEventListener("change", () => uncheckOthers(cb));
+          }
+        });
+      }, 0);
     }
-  </script>
+
+function submitHole(hole) {
+      const birdie = document.getElementById("birdie").checked;
+      const chip = document.getElementById("chip").checked;
+      const eagle = document.getElementById("eagle").checked;
+      const par = document.getElementById("par").checked;
+      const ctp = hole === 9 && document.getElementById("ctp").checked;
+
+      const playerName = document.getElementById("playerName").value.trim();
+      const playDate = document.getElementById("playDate").value;
+
+      if (!playerName || !playDate) {
+        alert("Please enter both your name and the date.");
+        return;
+      }
+
+      if (!(birdie || chip || eagle || par || ctp)) {
+        alert("Please select a score or status for this hole.");
+        return;
+      }
+
+      if (eagle) alert("🏆 Hole-in-One! That's legendary!");
+      if (birdie && chip) alert("👏 Chip-in birdie! That’s finesse!");
+
+      const scoreValue = eagle ? "1" : (birdie && chip ? "2*" : (birdie ? "2" : (par ? "3+" : "")));
+      const ctpMark = ctp ? " 📍" : "";
+
+      scores[hole] = scoreValue + ctpMark;
+
+      if (currentHoleIndex < holes.length - 1) {
+        currentHoleIndex++;
+      }
+      
+
+
+const dateInput = document.getElementById("playDate");
+if (dateInput && !dateInput.value) {
+  dateInput.value = new Date().toISOString().split("T")[0];
+}
+renderHoleForm();
+      
+
+      renderSummary();
+    }
+
+    function goBack() {
+      if (currentHoleIndex > 0) {
+        currentHoleIndex--;
+        renderHoleForm();
+      }
+    }
+
+    function getMark(hole) {
+      return scores[hole] || "";
+    }
+
+    function renderSummary() {
+      const playerName = document.getElementById("playerName")?.value.trim();
+      const playDate = document.getElementById("playDate")?.value;
+      const currentHole = holes[currentHoleIndex - 1] || 1;
+      const scoreValue = scores[currentHole] || "";
+      const ctp = scoreValue.includes("📍");
+
+      fetch("https://script.google.com/macros/s/AKfycbw0a-iAi31Vf1VzoHKTH7UMORL4Yj5nkMpqEuwp_V1HZ3QVV6qaTTBTX9frGMBZ30G4wA/exec", {
+        method: "POST",
+        body: JSON.stringify({
+          player: playerName,
+          date: playDate,
+          hole: currentHole,
+          score: scoreValue.replace(" 📍", ""),
+          ctp: ctp
+        }),
+        headers: { "Content-Type": "application/json" }
+      });
+      let headerRow = "<tr><th>Hole</th>" + holes.map(h => `<th>${h}</th>`).join("") + "</tr>";
+      let scoreRow = "<tr><td>Score</td>" + holes.map(h => `<td>${scores[h] || "–"}</td>`).join("") + "</tr>";
+      
+      const title = playerName && playDate ? `<h3 style='text-align:center;'>${playerName} – ${playDate}</h3>` : "";
+      summaryContainer.innerHTML = title + `
+        <table class="summary-table">
+          ${headerRow}
+          ${scoreRow}
+        </table>
+        <p class="note">1 = Hole-in-One • 2 = Birdie/Chip-In • 3+ = Par or Worse</p>
+        <div class="note" style="margin-top: 16px;">
+          ${holes.map(h => {
+            const mark = scores[h] || "–";
+            const birdie = mark.startsWith("2") ? "Yes" : "No";
+            const eagle = mark === "1" ? "Yes" : "No";
+            const chip = mark === "2*" ? "Yes" : "No";
+            return `<div><strong>Hole ${h}:</strong> Birdie: ${birdie}, Chip-In: ${chip}, Hole-in-One: ${eagle}</div>`;
+          }).join("")}
+        </div>`;
+    }
+
+    renderHoleForm();
+  
+
+    function resetRound() {
+      currentHoleIndex = 0;
+      Object.keys(scores).forEach(h => delete scores[h]);
+      document.getElementById("playerName").value = "";
+      document.getElementById("playDate").value = new Date().toISOString().split("T")[0];
+      renderHoleForm();
+      summaryContainer.innerHTML = "";
+    }
+
+</script>
 </body>
 </html>
